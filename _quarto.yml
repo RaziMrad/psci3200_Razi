@@ -1,0 +1,12 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Razi Mrad - PSCI 3200"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: Assignment_1.qmd
+        text: Research Question

@@ -1,0 +1,45 @@
+---
+title: "Assignment 1: Research Question and Data"
+subtitle: "PSCI 3200: Global Development"
+author: "Razi Mrad"
+date: "February 23, 2026"
+format: html
+---
+
+## Research Question: The Pragmatism of Capital: Regulatory Quality vs. Corruption in Africa
+
+### 1. Research Idea
+
+I aim to investigate whether foreign investors in African markets prioritize Regulatory Quality over the Control of Corruption. While international development discourse often focuses on the moral and economic imperatives of eradicating corruption, private capital may be more attracted to "efficient" administrative environments that offer clear rules of the game, even if those environments remain ethically compromised. This research will explore the relationship between these two distinct dimensions of governance and their respective influence on Foreign Direct Investment inflows. Specifically, I want to see if a country can "offset" high corruption with high regulatory efficiency to maintain investment levels.
+
+------------------------------------------------------------------------
+
+### 2. Hypotheses
+
+-   **Hypothesis 1 (H1):** Regulatory Quality will have a stronger positive correlation with FDI inflows (% of GDP) than Control of Corruption in African nations.
+-   **Hypothesis 2 (H2):** The negative impact of corruption on FDI will be mitigated in countries that maintain high scores in Regulatory Quality.
+
+------------------------------------------------------------------------
+
+### 3. Proposed Data and Measures
+
+To test these hypotheses, I will construct a panel dataset for 54 African countries covering the period 2014–2024.
+
+**Independent Variables (from World Bank Worldwide Governance Indicators - WGI)**\
+**`Regulatory Quality`**: Measures the perceived ability of the government to formulate and implement sound policies that promote private sector development.\
+**`Control of Corruption`**: Measures the perceived extent to which public power is exercised for private gain.
+
+**Dependent Variable (from World Bank World Development Indicators - WDI)**\
+**`Foreign direct investment, net inflows (% of GDP)`**: This serves as the primary measure of a country’s attractiveness to international capital relative to its economic size.
+
+**Control Variables:** To ensure that the relationship is not spurious, I will include the following measures from the WDI and WGI:\
+**`Total natural resources rents (% of GDP)`**: To account for FDI driven purely by extractive industries (oil/mining) regardless of governance quality.\
+**`Trade (% of GDP)`**: To control for the country's level of global economic integration.\
+**`Political Stability and Absence of Violence/Terrorism`**: To account for the physical security risks that may deter investors even in well-regulated environments.\
+**`GDP per capita (current US$)`**: To control for the baseline level of economic development.
+
+------------------------------------------------------------------------
+
+### 4. Methodology
+
+I will perform a cross-national regression analysis. By including both Regulatory Quality and Control of Corruption in the same model, I can isolate the individual effect of each variable. This will allow me to determine which institutional "signal" is the primary driver for global investors in the African context.

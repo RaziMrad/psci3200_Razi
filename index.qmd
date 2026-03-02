@@ -1,0 +1,7 @@
+---
+title: "Razi Mrad - PSCI 3200 Final Project"
+---
+
+## Welcome
+
+This site hosts my final project for PSCI 3200.
