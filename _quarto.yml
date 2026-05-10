@@ -8,5 +8,5 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - href: Assignment_1.qmd
-        text: Research Question
+      - href: psci_final.qmd
+        text: Final Project
