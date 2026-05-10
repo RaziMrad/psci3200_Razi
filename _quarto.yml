@@ -4,7 +4,3 @@ project:
 
 website:
   title: "Razi Mrad - PSCI 3200"
-  navbar:
-    left:
-      - href: psci_final.qmd
-        text: Final Project
