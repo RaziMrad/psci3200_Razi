@@ -5,10 +5,10 @@ library(fixest)
 library(modelsummary)
 library(kableExtra)
 library(ggrepel)
-library(marginaleffects)   # NEW: for marginal effects plots
+library(marginaleffects)   
 
 
-# ── 1. Read and Clean WDI Data ────────────────────────────────────────────────
+#  Read and Clean WDI Data                         
 
 cat("Reading WDI data...\n")
 wdi_raw <- read_csv("World_Development_Indicators.csv")
@@ -51,7 +51,7 @@ wdi_panel <- wdi_long %>%
               names_from = variable, values_from = value)
 
 
-# ── 2. Read and Clean WGI Data ────────────────────────────────────────────────
+# Read and Clean WGI Data                         
 
 cat("Reading WGI data...\n")
 wgi_raw <- read_csv("wgi_data.csv")
@@ -88,7 +88,7 @@ wgi_panel <- wgi_long %>%
               names_from = variable, values_from = value)
 
 
-# ── 3. Merge and Filter to Africa ─────────────────────────────────────────────
+# Merge and Filter to Africa                       ─
 
 # Get all African ISO3C codes using countrycode package
 african_iso3c <- countrycode::codelist %>%
@@ -113,9 +113,9 @@ panel <- wdi_panel %>%
   select(-portfolio_equity_bop, -gdp_current)
 
 
-# ── 4. Create Lagged Variables ────────────────────────────────────────────────
+# Create Lagged Variables                         
 # Lag corruption and regulatory quality by one year for placebo test
-# Investors make decisions based on prior year institutional information
+
 
 panel <- panel %>%
   group_by(country) %>%
@@ -127,7 +127,7 @@ panel <- panel %>%
   ungroup()
 
 
-# ── 5. Panel Diagnostics ──────────────────────────────────────────────────────
+# Panel Diagnostics                            
 
 cat("\n=== Panel Summary ===\n")
 cat("Dimensions:", nrow(panel), "rows x", ncol(panel), "columns\n")
@@ -147,7 +147,7 @@ cat(n_complete, "out of", nrow(panel), "\n")
 # ^^^ Use `r n_complete` in the .qmd to fill the placeholder in the data section
 
 
-# ── 6. Summary Statistics Table ───────────────────────────────────────────────
+# Summary Statistics Table                        ─
 
 panel_labeled <- panel %>%
   select(
@@ -171,14 +171,9 @@ summary_table <- datasummary(
 
 print(summary_table)
 
-# ── 7. Figure 1: Two Separate Scatter Plots Combined with patchwork ──────────
+# Figure 1: Two Separate Scatter Plots Combined with patchwork      
 #
-# Each panel is built independently so axis ranges, labels, and annotations
-# are fully tailored to their own governance dimension. patchwork::wrap_plots()
-# then assembles them into a single publication-ready figure with a shared
-# legend and overall title.
 
-# ── 7a. Shared base data ─────────────────────────────────────────────────────
 
 country_avg <- panel %>%
   group_by(country, iso3c) %>%
@@ -225,7 +220,7 @@ scatter_theme <- theme_minimal(base_size = 13) +
     plot.margin      = margin(10, 15, 5, 10)
   )
 
-# ── 7b. Helper: select labels for a given data frame ─────────────────────────
+#
 # Label the top-4 highest FDI countries, bottom-2, and any above 10 % of GDP
 
 add_labels <- function(df, score_col) {
@@ -238,7 +233,7 @@ add_labels <- function(df, score_col) {
     ))
 }
 
-# ── 7c. Panel A — Control of Corruption ──────────────────────────────────────
+#  Control of Corruption                    
 
 df_corr <- add_labels(country_avg, corruption)
 
@@ -287,7 +282,7 @@ fig1a <- ggplot(df_corr, aes(x = corruption, y = fdi)) +
   ) +
   scatter_theme
 
-# ── 7d. Panel B — Regulatory Quality ─────────────────────────────────────────
+#  Regulatory Quality                     ─
 
 df_reg <- add_labels(country_avg, reg_quality)
 
@@ -332,7 +327,7 @@ fig1b <- ggplot(df_reg, aes(x = reg_quality, y = fdi)) +
   ) +
   scatter_theme
 
-# ── 7e. Combine with patchwork ────────────────────────────────────────────────
+#   7e. Combine with patchwork                         
 # guide_area() places a single shared legend below both panels.
 # plot_annotation() adds the overall title and caption.
 
@@ -357,7 +352,7 @@ print(fig1)
 ggsave("plot1.png", fig1, width = 12, height = 6, dpi = 300)
 
 
-# ── 8. Figure 2: Interaction Visualization ────────────────────────────────────
+#   8. Figure 2: Interaction Visualization                   
 
 panel_interaction_plot <- panel %>%
   filter(!is.na(corruption_control), !is.na(reg_quality),
@@ -401,7 +396,7 @@ print(fig2)
 ggsave("plot2.png", fig2, width = 10, height = 5, dpi = 300)
 
 
-# ── 9. Main Regression: Interaction Model with Two-Way FE ─────────────────────
+#   9. Main Regression: Interaction Model with Two-Way FE           ─
 #
 # β₁ (corruption_control) captures the association between corruption and FDI
 # when reg_quality = 0, i.e., at the THEORETICAL MINIMUM of regulatory quality
@@ -418,7 +413,7 @@ model_main <- feols(
 summary(model_main)
 
 
-# ── 10. Figure 3: Marginal Effects Plot (NEW) ─────────────────────────────────
+#   10. Figure 3: Marginal Effects Plot (NEW)                 ─
 # Plot how corruption's marginal effect on FDI varies continuously across the
 # full observed range of regulatory quality, with 95% confidence intervals.
 # This is more informative than reading the interaction coefficient alone because
@@ -472,8 +467,8 @@ print(fig3)
 ggsave("plot3_marginal_effects.png", fig3, width = 10, height = 5, dpi = 300)
 
 
-# ── 11. Placebo Test 1: Corruption × Voice and Accountability ─────────────────
-# Tests whether ANY governance dimension moderates corruption's effect on FDI,
+#   11. Placebo Test 1: Corruption × Voice and Accountability         ─
+# Tests whether any governance dimension moderates corruption's effect on FDI,
 # or whether the moderation is specific to regulatory quality.
 # A non-significant interaction here supports the specificity of the main finding.
 
@@ -488,9 +483,8 @@ model_placebo_voice <- feols(
 summary(model_placebo_voice)
 
 
-# ── 12. Placebo Test 2: Lagged Governance ────────────────────────────────────
-# NOTE: This test is retained for completeness but should be interpreted
-# cautiously. WGI scores are very sticky year-to-year, so the lagged
+#   12. Placebo Test 2: Lagged Governance                   
+# WGI scores are very sticky year-to-year, so the lagged
 # specification largely reproduces the main model with a one-year offset
 # rather than providing genuinely independent evidence against reverse causality.
 # The voice & accountability and portfolio equity placebos are the stronger tests.
@@ -506,7 +500,7 @@ model_placebo_lag <- feols(
 summary(model_placebo_lag)
 
 
-# ── 13. Placebo Test 3: Portfolio Equity as Outcome ──────────────────────────
+#   13. Placebo Test 3: Portfolio Equity as Outcome              
 # FDI requires navigating local regulations; portfolio equity does not.
 # If the interaction is specific to long-horizon operational investment,
 # it should NOT predict short-horizon portfolio flows.
@@ -523,7 +517,7 @@ model_placebo_portfolio <- feols(
 summary(model_placebo_portfolio)
 
 
-# ── 14. Comparison Table: All Models ─────────────────────────────────────────
+#   14. Comparison Table: All Models                     ─
 
 models_list <- list(
   "Main Model"          = model_main,
